@@ -131,17 +131,6 @@ const validateUser= (req,res,next)=>{
 const validateUpdate = (req,res,next) => {
     const {name,phone,email,password} = req.body;
 
-    // const users = getUsers();
-    // const email1 = req.query.email;
-    // console.log("email",email1);
-    // if(!isEmail(email1)){
-    //     res.status(412).json({message:"Invalid Email"});
-    // }
-    // else{
-    //     const exists = users.find((user)=> user.email === email1);
-    //     req.exists = exists;  
-    // }
-
     if(name){
         console.log("name",name);
         if(!isValidName(name)){
@@ -182,11 +171,8 @@ const validateUpdate = (req,res,next) => {
 //eg: /users/john@gmail.com - update & delete
 router.route('/')
         .patch([validateUser,validateUpdate],(req,res)=>{
-            console.log("hiii");
             const {name, phone, email, password} = req.body;
-            console.log(name);
             const users=getUsers();
-            console.log("reqexist",req.exists)
             if(req.exists){
                 try{
                     for(let i=0; i< users.length; i++){
