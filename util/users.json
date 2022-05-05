@@ -1,1 +1,32 @@
-[{"name":"vimu kale","phone":"1234567890","email":"vimu@gmail.com","password":"Vimu@123"},{"name":"ajinkya","phone":"1234567890","email":"ajinkya@gmail.com","password":"Ajinkya@123"},{"name":"prachi Demote","phone":"0987654321","email":"prachii@gmail.com","password":"Prachi@123"},{"name":"aakash","phone":"1234567890","email":"aakash@gmail.com","password":"Aakash@123"},{"name":"Prachi","phone":"3245378163","email":"prachi@gmail.com","password":"Prachi@123"},{"name":"Pra11hi","phone":"5353535353","email":"prachiii@gmail.com","password":"Prachi@123"},{"name":"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","phone":"5353535343","email":"pracha@gmail.com","password":"Prachi@123"},{"name":"pra","phone":"1234567890","email":"prachassss@gmail.com","password":"Prachi@123"}]
+[
+    {
+        "name":"vimu",
+        "phone":"0987654321",
+        "email":"vimurk@gmail.com",
+        "password":"VimuRK@123"
+    },
+    {
+        "name":"ajinkya",
+        "phone":"1234567890",
+        "email":"ajinkya@gmail.com",
+        "password":"Ajinkya@123"
+    },
+    {
+        "name":"prachi",
+        "phone":"0987654321",
+        "email":"prachi@gmail.com",
+        "password":"Prachi@123"
+    },
+    {
+        "name":"aakash",
+        "phone":"1234567890",
+        "email":"aakash@gmail.com",
+        "password":"Aakash@123"
+    },
+    {
+        "name":"Abhi",
+        "phone":"1234567890",
+        "email":"abhi@gmail.com",
+        "password":"Abhi@123"
+    }
+]

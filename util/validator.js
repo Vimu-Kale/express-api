@@ -9,9 +9,6 @@ const isPhoneNumber = (phone) =>{
 }
 
 const isValidName = (name) => {
-    // let nameformat = /^([a-zA-Z]{2,}\s[a-zA-Z]{1,}'?-?[a-zA-Z]{2,}\s?([a-zA-Z]{1,})?)/;
-    // let nameformat = /^([a-zA-z]{0,10}\s{0,1}[a-zA-Z]{1,10}'?-?[a-zA-Z]{1,10})$/
-    // let nameformat = /^([a-zA-z]\s{0,1}[a-zA-Z]'?-?[a-zA-Z]).{1,27}$/
     let nameformat = /(^[a-zA-Z\s]{2,30})/;
     return nameformat.test(name);
 }
@@ -28,3 +25,11 @@ module.exports={
     isValidPassword,
 }
 
+
+
+
+
+//NAME FORMAT VARIENT - NOT WORKING AS EXPECTED
+    // let nameformat = /^([a-zA-Z]{2,}\s[a-zA-Z]{1,}'?-?[a-zA-Z]{2,}\s?([a-zA-Z]{1,})?)/;
+    // let nameformat = /^([a-zA-z]{0,10}\s{0,1}[a-zA-Z]{1,10}'?-?[a-zA-Z]{1,10})$/
+    // let nameformat = /^([a-zA-z]\s{0,1}[a-zA-Z]'?-?[a-zA-Z]).{1,27}$/
