@@ -14,10 +14,14 @@ const getUsers =  () => {
 //MIDDLEWARE FOR LOGIN
 const isAuthorized =  (req,res,next)=>{
     const users =  getUsers();
-    console.log(users);
-    const isValidEmail = isEmail(req.body.email);
-    console.log(isValidEmail);
-    if (isValidEmail){
+    const {email,password}=req.body;
+    const isValidEmail = isEmail(email);
+
+    if(!req.body || !email  || !password || email.trim().length <= 0 || password.trim().length <= 0)
+    {   
+        res.status(400).json({"message":"Missing Fields"});
+    }
+    else if(isValidEmail){
         const validUser = users.find((user)=> user.email === req.body.email)
         console.log(validUser);
         if(typeof(validUser)!="undefined"){
@@ -37,12 +41,15 @@ const validateSignUp = (req,res,next) =>{
     const {name,phone,email,password}=req.body;
     const users = getUsers();
     const exists = users.find((user)=> user.email === email);
-    
-    if(!isValidName(name)){
-        res.status(422).json({
+    if(!req.body || !name || !phone || !email || !password)
+    {
+        res.status(400).json({"message":"Missing User Details"});
+    }
+    else if(!isValidName(name)){
+        res.status(400).json({
             "message":"Invalid Name",
             "desc":"Name Must Contain only Alphabets & length between 2-30 char"
-    });
+        });
     }
     else if(!isPhoneNumber(phone)){
         res.status(400).json({
@@ -70,8 +77,12 @@ const validateSignUp = (req,res,next) =>{
 const validateUser= (req,res,next)=>{
     const users = getUsers();
     const email = req.query.email;
-    console.log("email",email);
-    if(!isEmail(email)){
+
+    if(!email || email.trim().length <= 0)
+    {
+        res.status(400).json({"message":"Missing User Email"});
+    }
+    else if(!isEmail(email)){
         res.status(412).json({message:"Invalid Email"});
     }
     else{
