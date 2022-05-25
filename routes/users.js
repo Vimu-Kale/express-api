@@ -68,7 +68,7 @@ router.route('/')
                 res.status(200).json({"message":"user Updated Successfully"});
             }
             else{
-                res.status(400).json({"message":"User Doesn't Exist"});
+                res.status(409).json({"message":"User Doesn't Exist"});
             }
         })
 
@@ -86,7 +86,7 @@ router.route('/')
                 res.status(200).json({"message":"User Delated Successfully"});
             }
             else{
-                res.status(400).json({"message":"User Does Not Exist"});
+                res.status(409).json({"message":"User Does Not Exist"});
             }
         })
 
