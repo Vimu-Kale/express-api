@@ -5,6 +5,9 @@ const {
   isValidPassword,
   isDigit,
 } = require("../util/validator.js");
+
+const { PASSWORD_RS, NAME_RS, PHONE_RS } = require("../util/ResponseStrings");
+
 const db = require("../config/MysqlKnex");
 
 const getUsers = (myCallback) => {
@@ -51,27 +54,18 @@ const isAuthorized = (req, res, next) => {
 const validateSignUp = (req, res, next) => {
   const validateSignUpCallback = (users) => {
     const { name, phone, email, password } = req.body;
-
     const exists = users.find((user) => user.email === email);
+
     if (!req.body || !name || !phone || !email || !password) {
       res.status(400).json({ message: "Missing User Details" });
     } else if (!isValidName(name)) {
-      res.status(400).json({
-        message: "Invalid Name",
-        desc: "Name Must Contain only Alphabets & length between 2-30 char",
-      });
+      res.status(400).json(NAME_RS);
     } else if (!isPhoneNumber(phone)) {
-      res.status(400).json({
-        message: "Invalid Phone Number",
-        desc: "Phone Number Must Be of exactly 10 digits only",
-      });
+      res.status(400).json(PHONE_RS);
     } else if (!isEmail(email)) {
       res.status(400).json({ message: "Invalid Email" });
     } else if (!isValidPassword(password)) {
-      res.status(400).json({
-        message: "Invalid Password",
-        desc: "Password Must be combination of atleast 1 special char & digit and length between 8-16 char",
-      });
+      res.status(400).json(PASSWORD_RS);
     } else {
       req.exists = exists;
       next();
@@ -109,36 +103,23 @@ const validateUpdate = (req, res, next) => {
   if (name) {
     if (!isValidName(name)) {
       valid = false;
-      res.status(422).json({
-        message: "Invalid Name",
-        desc: "Name Must Contain only Alphabets & length between 2-30 char",
-      });
+      res.status(422).json(NAME_RS);
     }
   }
   if (phone) {
     if (!isPhoneNumber(phone)) {
       valid = false;
-      res.status(422).json({
-        message: "Invalid Phone Number",
-        desc: "Phone Number Must Be of exactly 10 digits only",
-      });
+      res.status(422).json(PHONE_RS);
     }
   }
   if (email) {
     valid = false;
     res.status(422).json({ message: "You can not update email!" });
-    // if (!isEmail(email)) {
-    //   valid = false;
-    //   res.status(422).json({ message: "Invalid Email" });
-    // }
   }
   if (password) {
     if (!isValidPassword(password)) {
       valid = false;
-      res.status(422).json({
-        message: "Invalid Password",
-        desc: "Password Must be combination of atleast 1 special char & digit and length between 8-16 char",
-      });
+      res.status(422).json(PASSWORD_RS);
     }
   }
   if (valid) {

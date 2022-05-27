@@ -19,6 +19,7 @@ router.get("/", (req, res) => {
     .catch((err) => res.status(400).json("Unable to retrive data!"));
 });
 
+//Get Particular user using ID:  /users/user?id=8
 router.get("/user", validateUser, (req, res) => {
   if (req.exists) {
     db.select("*")
@@ -86,8 +87,6 @@ router
         password: hash || req.exists.password,
       };
 
-      // console.log(user);
-
       db("users")
         .where("id", "=", req.query.id)
         .update(user)
@@ -123,6 +122,7 @@ router
     }
   });
 
+//IF NO ROUTE IS MATCHED
 router.all("*", (req, res) => {
   res.status(400).json({ message: "Route Does Not Exist" });
 });
