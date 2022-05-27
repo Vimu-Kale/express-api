@@ -92,7 +92,7 @@ const validateUser = (req, res, next) => {
       res.status(412).json({ message: "Invalid ID" });
     } else {
       const exists = users.find((user) => user.id === Number(id));
-      console.log(exists);
+      // console.log(exists);
       req.exists = exists;
       next();
     }

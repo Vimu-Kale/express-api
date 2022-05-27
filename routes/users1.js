@@ -21,7 +21,6 @@ router.get("/", (req, res) => {
 
 router.get("/user", validateUser, (req, res) => {
   if (req.exists) {
-    console.log("hii");
     db.select("*")
       .from("users")
       .where("id", req.query.id)
