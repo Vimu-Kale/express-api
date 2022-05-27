@@ -3,9 +3,9 @@ const {
   isPhoneNumber,
   isValidName,
   isValidPassword,
+  isDigit,
 } = require("../util/validator.js");
-const fs = require("fs");
-const db = require("../config/MysqlKnex").default;
+const db = require("../config/MysqlKnex");
 
 const getUsers = (myCallback) => {
   db.select("*")
@@ -18,7 +18,6 @@ const getUsers = (myCallback) => {
 
 //MIDDLEWARE FOR LOGIN
 const isAuthorized = (req, res, next) => {
-  //   const users = getUsers();
   const isAuthorizedCallback = (users) => {
     const { email, password } = req.body;
     const isValidEmail = isEmail(email);
@@ -52,7 +51,7 @@ const isAuthorized = (req, res, next) => {
 const validateSignUp = (req, res, next) => {
   const validateSignUpCallback = (users) => {
     const { name, phone, email, password } = req.body;
-    // const users = getUsers();
+
     const exists = users.find((user) => user.email === email);
     if (!req.body || !name || !phone || !email || !password) {
       res.status(400).json({ message: "Missing User Details" });
@@ -74,7 +73,6 @@ const validateSignUp = (req, res, next) => {
         desc: "Password Must be combination of atleast 1 special char & digit and length between 8-16 char",
       });
     } else {
-      //   console.log(exists);
       req.exists = exists;
       next();
     }
@@ -85,17 +83,16 @@ const validateSignUp = (req, res, next) => {
 
 //VALIDATE USER FOR UPDATE & DELETE
 const validateUser = (req, res, next) => {
-  //   const users = getUsers();
-
   const validateUserCallback = (users) => {
-    const email = req.query.email;
+    const id = req.query.id;
 
-    if (!email || email.trim().length <= 0) {
-      res.status(400).json({ message: "Missing User Email" });
-    } else if (!isEmail(email)) {
-      res.status(412).json({ message: "Invalid Email" });
+    if (!id || id.trim().length <= 0) {
+      res.status(400).json({ message: "Missing User ID" });
+    } else if (!isDigit(id)) {
+      res.status(412).json({ message: "Invalid ID" });
     } else {
-      const exists = users.find((user) => user.email === email);
+      const exists = users.find((user) => user.id === Number(id));
+      console.log(exists);
       req.exists = exists;
       next();
     }
@@ -128,10 +125,12 @@ const validateUpdate = (req, res, next) => {
     }
   }
   if (email) {
-    if (!isEmail(email)) {
-      valid = false;
-      res.status(422).json({ message: "Invalid Email" });
-    }
+    valid = false;
+    res.status(422).json({ message: "You can not update email!" });
+    // if (!isEmail(email)) {
+    //   valid = false;
+    //   res.status(422).json({ message: "Invalid Email" });
+    // }
   }
   if (password) {
     if (!isValidPassword(password)) {

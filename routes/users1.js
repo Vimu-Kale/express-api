@@ -1,15 +1,13 @@
-const db = require("../config/MysqlKnex").default;
+const db = require("../config/MysqlKnex");
 const express = require("express");
+const bcrypt = require("bcrypt");
 const router = express.Router();
 const {
   isAuthorized,
-  getUsers,
   validateSignUp,
   validateUser,
   validateUpdate,
 } = require("../middleware/userMiddleware.js");
-const fs = require("fs");
-const { response } = require("express");
 
 // /users
 router.get("/", (req, res) => {
@@ -21,9 +19,25 @@ router.get("/", (req, res) => {
     .catch((err) => res.status(400).json("Unable to retrive data!"));
 });
 
+router.get("/user", validateUser, (req, res) => {
+  if (req.exists) {
+    console.log("hii");
+    db.select("*")
+      .from("users")
+      .where("id", req.query.id)
+      .then((data) => {
+        res.send(data);
+      })
+      .catch((err) => res.status(400).json("Unable to retrive data!"));
+  } else {
+    res.status(409).json({ message: "User Doesn't Exist" });
+  }
+});
+
 // /users/login
 router.post("/login", isAuthorized, (req, res) => {
-  if (req.validUser.password === req.body.password) {
+  const result = bcrypt.compareSync(req.body.password, req.validUser.password);
+  if (result) {
     res.status(200).json({ message: "Login Successful" });
   } else {
     res.status(401).json({ message: "Wrong Cradentials" });
@@ -33,14 +47,17 @@ router.post("/login", isAuthorized, (req, res) => {
 // /users/signup
 router.post("/signup", validateSignUp, (req, res) => {
   const { name, phone, email, password } = req.body;
-  //   const users = getUsers();
+
+  const salt = bcrypt.genSaltSync(10);
+  const hash = bcrypt.hashSync(password, salt);
+
   if (!req.exists) {
     db("users")
       .insert({
         name,
         phone,
         email,
-        password,
+        password: hash,
       })
       .then((response) => {
         // console.log(response);
@@ -56,20 +73,24 @@ router.post("/signup", validateSignUp, (req, res) => {
 router
   .route("/")
   .patch([validateUser, validateUpdate], (req, res) => {
-    const { name, phone, email, password } = req.body;
+    const { name, phone, password } = req.body;
 
     if (req.exists) {
+      if (password) {
+        const salt = bcrypt.genSaltSync(10);
+        var hash = bcrypt.hashSync(password, salt);
+      }
       let user = {
         name: name || req.exists.name,
         phone: phone || req.exists.phone,
-        email: email || req.exists.email,
-        password: password || req.exists.password,
+        email: req.exists.email,
+        password: hash || req.exists.password,
       };
 
       // console.log(user);
 
       db("users")
-        .where("email", "=", req.query.email)
+        .where("id", "=", req.query.id)
         .update(user)
         .then((response) => {
           // console.log(response);
@@ -86,10 +107,9 @@ router
 
   //DELETE USER USING EMAIL
   .delete(validateUser, (req, res) => {
-    // const users = getUsers();
     if (req.exists) {
       db("users")
-        .where("email", req.query.email)
+        .where("id", req.query.id)
         .del()
         .then((response) => {
           // console.log(response);
@@ -104,12 +124,8 @@ router
     }
   });
 
-// const setUser = (users) => {
-//   try {
-//     fs.writeFileSync("./util/users.json", JSON.stringify(users));
-//   } catch (e) {
-//     console.log(e);
-//   }
-// };
+router.all("*", (req, res) => {
+  res.status(400).json({ message: "Route Does Not Exist" });
+});
 
 module.exports = router;
