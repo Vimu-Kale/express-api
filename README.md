@@ -1,6 +1,7 @@
-# express-api [MySQL DB-Integration]
+# express-api ( MySQL DB-Integration )
 
-LOOK FOR:
-
-routes/user1.js
-Middleware/userMiddleware.js
+# files updated for integration:
+1. .env
+2. config/MysqlKnex.js
+3. routes/user1.js
+4. Middleware/userMiddleware.js
