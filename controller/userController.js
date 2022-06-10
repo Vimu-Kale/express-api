@@ -1,5 +1,7 @@
 const bcrypt = require("bcrypt");
+require("dotenv").config();
 const User = require("../model/user");
+const jwt = require("jsonwebtoken");
 
 //ERROR HANDLERS
 const handleValidationError = (err) => {
@@ -79,7 +81,10 @@ const handleSignUp = async (req, res) => {
 
 const handleGetUserByID = async (req, res) => {
   try {
-    const user = await User.findById({ _id: req.query.id });
+    const user = await User.findById({ _id: req.query.id }).where({
+      isDeleted: false,
+    });
+
     if (!user) {
       res.status(404).json({ success: false, message: "User not found" });
     } else {
@@ -168,9 +173,10 @@ const handleUpdateByID = async (req, res) => {
   }
 };
 
-//LOGIN
+//--------------------------------------------------------------------------------
+//LOGIN:  REFER TO "authServer.js" for JWT Token & Refresh Token
 // --------------------------------------------------------------------------------
-
+//LOGIN WITHOUT AUTHENTICATION
 const handleUserLogin = async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -184,10 +190,16 @@ const handleUserLogin = async (req, res) => {
           .status(400)
           .json({ success: false, message: "Invalid Credientials" });
       } else {
+        const accessToken = jwt.sign(
+          userLogin.toJSON(),
+          process.env.ACCESS_TOKEN_SECRET
+        );
+
         res.status(200).json({
           success: true,
           message: "Login Successfull",
           payload: userLogin,
+          accessToken: accessToken,
         });
       }
     } else {

@@ -4,6 +4,7 @@ const {
   validatePassword,
   isValidID,
   validateLoginDetails,
+  authenticateToken,
 } = require("../middleware/userMiddleware");
 
 const {
@@ -16,18 +17,29 @@ const {
   handleUserLogin,
 } = require("../controller/userController");
 
-router.get("/", handleFetchUsers);
+router.get("/", authenticateToken, handleFetchUsers);
 
 router.post("/signup", validatePassword, handleSignUp);
 
-router.get("/user", isValidID, handleGetUserByID);
+router.get("/user", authenticateToken, isValidID, handleGetUserByID);
 
-router.delete("/", isValidID, handleHardDeleteByID);
+router.delete("/", authenticateToken, isValidID, handleHardDeleteByID);
 
-router.delete("/softdelete", isValidID, handleSoftDeleteByID);
+router.delete(
+  "/softdelete",
+  authenticateToken,
+  isValidID,
+  handleSoftDeleteByID
+);
 
-router.patch("/", [isValidID, validatePassword], handleUpdateByID);
+router.patch(
+  "/",
+  [authenticateToken, isValidID, validatePassword],
+  handleUpdateByID
+);
 
-router.post("/login", validateLoginDetails, handleUserLogin);
+//LOGIN
+// refer to "authServer.js" for Login Route For JWT & refresh Token Generation and deletion
+// router.post("/login", validateLoginDetails, handleUserLogin);
 
 module.exports = router;

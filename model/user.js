@@ -30,7 +30,7 @@ const userSchema = new mongoose.Schema({
     },
   },
   phone: {
-    type: Number,
+    type: String,
     required: [true, "Phone Number Is Required"],
     unique: [true, "Phone Number Already Exists"],
     validate: [validatePhone, "Phone Number Must Be Of 10 Digits"],

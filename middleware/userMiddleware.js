@@ -1,5 +1,6 @@
 const { ObjectId } = require("mongodb");
 const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
 
 const validatePasswordExp = (password) => {
   const regex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9]).{8,32}$/;
@@ -23,10 +24,13 @@ const validatePassword = (req, res, next) => {
             "Password must contain a special character, one lowercase & Uppercase character and atleast one number and length between 8-32",
         });
       } else {
-        const salt = bcrypt.genSaltSync(10);
-        const hash = bcrypt.hashSync(password, salt);
-        req.body.password = hash;
-        next();
+        const passwordHash = async (password) => {
+          const salt = await bcrypt.genSalt(10);
+          const hash = await bcrypt.hash(password, salt);
+          req.body.password = hash;
+          next();
+        };
+        passwordHash(password);
       }
     } else {
       next();
@@ -63,8 +67,27 @@ const validateLoginDetails = (req, res, next) => {
   }
 };
 
+//AUTHENTICATE TOKEN
+function authenticateToken(req, res, next) {
+  const authHeader = req.headers["authorization"];
+  const token = authHeader && authHeader.split(" ")[1];
+  if (token == null)
+    return res
+      .status(401)
+      .json({ success: false, message: "No Token Received" });
+  jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, userLogin) => {
+    if (err)
+      return res
+        .status(403)
+        .json({ success: false, message: "Invalid Token Or No Longer Valid" });
+    req.userLogin = userLogin;
+    next();
+  });
+}
+
 module.exports = {
   validatePassword,
   isValidID,
   validateLoginDetails,
+  authenticateToken,
 };
